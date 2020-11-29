@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment  
+metadata: 
+  name: php
+spec: 
+  replicas: 2
+  selector: 
+    matchLabels:
+      app: php
+  template: 
+    metadata:
+      name: php
+      labels:
+        app: php
+    spec:
+      containers:
+      - name: php
+        image: walidledocker/php-apache
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: apps/v1
+kind: Deployment  
+metadata: 
+  name: database
+spec: 
+  replicas: 2
+  selector: 
+    matchLabels:
+      app: database
+  template: 
+    metadata:
+      name: database
+      labels:
+       app: database
+    spec:
+      containers:
+      - name: database
+        image: mysql
+        args: ["--default-authentication-plugin=mysql_native_password"]
+        env: 
+        - name: MYSQL_ROOT_PASSWORD
+          value: "example"
+        - name: MYSQL_DATABASE
+          value: "myapp"
+        - name: MYSQL_USER
+          value: "Lwalid"
+        - name: MYSQL_PASSWORD
+          value: "testmdp"
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: phpmyadmin 
+spec: 
+  replicas: 2 
+  selector: 
+    matchLabels:
+      app: phpmyadmin
+  template: 
+    metadata:
+      name: phpmyadmin
+      labels:
+        app: phpmyadmin
+    spec:
+      containers:
+      - name: phpmyadmin
+        image: phpmyadmin
+        env: 
+        - name: PMA_ARBITRARY
+          value: "1"
+        - name: PMA_HOST
+          value: "database"
+        imagePullPolicy: IfNotPresent  
